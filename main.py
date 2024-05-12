@@ -327,7 +327,7 @@ def utility_function(board):
     ai_edges = sum(1 for edge in edges if board[edge[0]][edge[1]] == COMPUTER_PLAYER)
     player_edges = sum(1 for edge in edges if board[edge[0]][edge[1]] == HUMAN_PLAYER)
     
-    return 10 * (scores[1] - scores[0]) + 50 * (ai_corners - player_corners) + 10 * (ai_edges - player_edges)
+    return 5 * (scores[1] - scores[0]) + 50 * (ai_corners - player_corners) + 20 * (ai_edges - player_edges)
 
 # Old Utility Function
 # def utility_function(board):
