@@ -82,11 +82,11 @@ def take_complexity_level():
     level = int(input())
     global COMPLEXITY_LEVEL
     if (level == 1):
-        COMPLEXITY_LEVEL = 2
+        COMPLEXITY_LEVEL = 1
     elif (level == 2):
-        COMPLEXITY_LEVEL = 5
+        COMPLEXITY_LEVEL = 3
     else:
-        COMPLEXITY_LEVEL = 10
+        COMPLEXITY_LEVEL = 5
 
 
 def get_human_player_move(board):
@@ -308,10 +308,30 @@ def minimax(board, depth, maximizing_player, alpha, beta):
 
         return best
 
+# Implementing the utility function
+#In Othello, it's often advantageous to control the corners and the edges of the board, and to force your opponent to have many possible moves (which often leads to them flipping many pieces and opening up opportunities for you). A more sophisticated utility function might take these factors into account
 
+# In the game of Othello, controlling the corners and edges of the board is a common strategy. Here's what that means:
+    # Controlling a corner: The corners of the board are the positions (0,0), (0,7), (7,0), and (7,7). Once a piece is placed in a corner, it cannot be flipped by the opponent because there are no positions surrounding it from all sides. Therefore, controlling the corners is a powerful strategy because those pieces are permanently yours.
+    # Controlling an edge: The edges of the board are the positions along the outermost rows and columns, excluding the corners. Pieces on the edges can only be flipped from one direction (since there's no way to place a piece on the other side), so they're less likely to be flipped than pieces in the middle of the board. Controlling the edges can therefore provide a stable base of pieces that are less likely to be flipped.
+    # Having a piece on the board: This simply refers to the number of pieces you have on the board. In the endgame, the player with the most pieces on the board wins. However, in the early and middle stages of the game, having more pieces can actually be a disadvantage, because it gives the opponent more opportunities to flip your pieces.
+    # In the context of the utility function, "controlling a corner" or "controlling an edge" means having a piece in one of those positions, and "having a piece on the board" means having a piece anywhere on the board. The utility function assigns different weights to these factors to reflect their strategic importance.
 def utility_function(board):
     scores = get_score(board)
-    return scores[1] - scores[0]
+    corners = [(0, 0), (0, 7), (7, 0), (7, 7)]
+    edges = [(0, i) for i in range(8)] + [(7, i) for i in range(8)] + [(i, 0) for i in range(8)] + [(i, 7) for i in range(8)]
+    
+    ai_corners = sum(1 for corner in corners if board[corner[0]][corner[1]] == COMPUTER_PLAYER)
+    player_corners = sum(1 for corner in corners if board[corner[0]][corner[1]] == HUMAN_PLAYER)
+    
+    ai_edges = sum(1 for edge in edges if board[edge[0]][edge[1]] == COMPUTER_PLAYER)
+    player_edges = sum(1 for edge in edges if board[edge[0]][edge[1]] == HUMAN_PLAYER)
+    
+    return 10 * (scores[1] - scores[0]) + 50 * (ai_corners - player_corners) + 10 * (ai_edges - player_edges)
 
+# Old Utility Function
+# def utility_function(board):
+#     scores = get_score(board)
+#     return scores[1] - scores[0]
 
 game_controller()
