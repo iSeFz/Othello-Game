@@ -286,13 +286,13 @@ class GameController:
 
     def minimax(self, board, depth, maximizing_player, alpha, beta):
         if (depth == COMPLEXITY_LEVEL or
-                self.check_no_empty_cells(board) or
-                self.get_available_moves(board, HUMAN_PLAYER) == [] or
-                self.get_available_moves(board, COMPUTER_PLAYER) == []):
+                self.check_end_game()):
             return self.utility_function(board)
         if maximizing_player:
             best = MIN
             available_moves = self.get_available_moves(board, COMPUTER_PLAYER)
+            if(available_moves == []):
+                return self.minimax(board, depth + 1, False, alpha, beta)
             for move in available_moves:
                 new_board = self.making_outflanking(
                     board, move, COMPUTER_PLAYER)
@@ -306,6 +306,8 @@ class GameController:
         else:
             best = MAX
             available_moves = self.get_available_moves(board, HUMAN_PLAYER)
+            if(available_moves == []):
+                return self.minimax(board, depth + 1, True, alpha, beta)
             for move in available_moves:
                 new_board = self.making_outflanking(board, move, HUMAN_PLAYER)
                 val = self.minimax(new_board, depth + 1, True, alpha, beta)
